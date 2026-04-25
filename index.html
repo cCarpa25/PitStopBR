@@ -1,0 +1,2266 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PitStopBR — A Plataforma do Caminhoneiro Autônomo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0D1B2A;
+    --navy-mid: #1A2E45;
+    --navy-light: #243B55;
+    --orange: #F4731C;
+    --orange-light: #FF9A4D;
+    --orange-dark: #C25A0D;
+    --teal: #00C9A7;
+    --teal-dark: #009E84;
+    --cream: #F5F0E8;
+    --gray: #8E9BAA;
+    --white: #FFFFFF;
+    --font-display: 'Barlow Condensed', sans-serif;
+    --font-body: 'Barlow', sans-serif;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--font-body);
+    background: var(--navy);
+    color: var(--white);
+    overflow-x: hidden;
+  }
+
+  /* ===== NAV ===== */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1rem 2rem;
+    background: rgba(13,27,42,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(244,115,28,0.15);
+  }
+
+  .logo {
+    font-family: var(--font-display);
+    font-size: 1.8rem;
+    font-weight: 900;
+    letter-spacing: -0.5px;
+    color: var(--white);
+  }
+
+  .logo span { color: var(--orange); }
+
+  nav ul {
+    display: flex; gap: 2rem; list-style: none;
+  }
+
+  nav ul a {
+    font-size: 0.9rem; font-weight: 500;
+    color: rgba(255,255,255,0.7);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  nav ul a:hover { color: var(--orange); }
+
+  .nav-cta {
+    background: var(--orange);
+    color: var(--white) !important;
+    padding: 0.5rem 1.25rem;
+    border-radius: 6px;
+    font-weight: 600 !important;
+    transition: background 0.2s !important;
+  }
+  .nav-cta:hover { background: var(--orange-dark) !important; color: var(--white) !important; }
+
+  /* ===== HERO ===== */
+  .hero {
+    min-height: 100vh;
+    display: flex; align-items: center;
+    position: relative;
+    overflow: hidden;
+    padding: 7rem 2rem 4rem;
+  }
+
+  .hero-bg {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse at 80% 50%, rgba(244,115,28,0.12) 0%, transparent 60%),
+      radial-gradient(ellipse at 20% 80%, rgba(0,201,167,0.08) 0%, transparent 50%),
+      linear-gradient(170deg, #0D1B2A 0%, #1A2E45 50%, #0D1B2A 100%);
+  }
+
+  .road-lines {
+    position: absolute; bottom: 0; left: 0; right: 0; height: 180px;
+    background: linear-gradient(to bottom, transparent, rgba(244,115,28,0.04));
+    overflow: hidden;
+  }
+
+  .road-line {
+    position: absolute; bottom: 0; width: 100%; height: 3px;
+    background: repeating-linear-gradient(90deg, rgba(244,115,28,0.3) 0px, rgba(244,115,28,0.3) 60px, transparent 60px, transparent 120px);
+    animation: roadMove 2s linear infinite;
+  }
+
+  @keyframes roadMove {
+    from { transform: translateX(0); }
+    to { transform: translateX(-120px); }
+  }
+
+  .hero-content {
+    position: relative; z-index: 1;
+    max-width: 1100px; margin: 0 auto; width: 100%;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center;
+  }
+
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(244,115,28,0.15);
+    border: 1px solid rgba(244,115,28,0.4);
+    padding: 6px 14px; border-radius: 20px;
+    font-size: 0.8rem; font-weight: 600;
+    color: var(--orange-light);
+    text-transform: uppercase; letter-spacing: 1px;
+    margin-bottom: 1.5rem;
+  }
+
+  .badge-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--orange);
+    animation: pulse 1.5s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.8); }
+  }
+
+  .hero h1 {
+    font-family: var(--font-display);
+    font-size: clamp(3rem, 6vw, 5.5rem);
+    font-weight: 900;
+    line-height: 0.95;
+    letter-spacing: -1px;
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+  }
+
+  .hero h1 .accent { color: var(--orange); display: block; }
+
+  .hero p.sub {
+    font-size: 1.1rem;
+    color: rgba(255,255,255,0.75);
+    line-height: 1.7;
+    max-width: 480px;
+    margin-bottom: 2.5rem;
+  }
+
+  .hero-ctas {
+    display: flex; flex-wrap: wrap; gap: 1rem;
+  }
+
+  .btn-primary {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--orange);
+    color: var(--white);
+    padding: 1rem 2rem;
+    border-radius: 8px;
+    font-family: var(--font-display);
+    font-size: 1.1rem; font-weight: 700;
+    text-decoration: none; text-transform: uppercase; letter-spacing: 0.5px;
+    transition: all 0.2s;
+    border: none; cursor: pointer;
+  }
+
+  .btn-primary:hover {
+    background: var(--orange-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(244,115,28,0.4);
+  }
+
+  .btn-secondary {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: transparent;
+    color: var(--white);
+    padding: 1rem 2rem;
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.3);
+    font-family: var(--font-display);
+    font-size: 1.1rem; font-weight: 700;
+    text-decoration: none; text-transform: uppercase; letter-spacing: 0.5px;
+    transition: all 0.2s;
+    cursor: pointer;
+  }
+
+  .btn-secondary:hover {
+    border-color: var(--teal);
+    color: var(--teal);
+    background: rgba(0,201,167,0.08);
+  }
+
+  .hero-stats {
+    display: flex; gap: 2rem; margin-top: 3rem;
+  }
+
+  .hero-stat { text-align: center; }
+
+  .hero-stat .num {
+    font-family: var(--font-display);
+    font-size: 2rem; font-weight: 900;
+    color: var(--orange);
+    display: block;
+  }
+
+  .hero-stat .lbl {
+    font-size: 0.75rem; font-weight: 500;
+    color: rgba(255,255,255,0.5);
+    text-transform: uppercase; letter-spacing: 1px;
+  }
+
+  .hero-visual {
+    display: flex; justify-content: center; align-items: center;
+    width: 100%; position: relative;
+  }
+
+  .hero-image {
+    width: 100%; max-width: 520px;
+    aspect-ratio: 16 / 10;
+    min-height: 325px;
+    border-radius: 28px;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.14);
+    background: linear-gradient(180deg, rgba(11,26,47,0.98), rgba(13,27,42,0.95));
+    box-shadow: 0 26px 60px rgba(0, 0, 0, 0.28);
+  }
+
+  .hero-image img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center center;
+  }
+
+  .truck-card {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 16px;
+    padding: 1.5rem;
+    backdrop-filter: blur(10px);
+  }
+
+  .truck-card.featured {
+    border-color: rgba(244,115,28,0.4);
+    background: rgba(244,115,28,0.07);
+  }
+
+  .card-header {
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 1rem;
+  }
+
+  .card-icon {
+    width: 42px; height: 42px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.3rem;
+  }
+
+  .card-icon.orange { background: rgba(244,115,28,0.2); }
+  .card-icon.teal { background: rgba(0,201,167,0.2); }
+  .card-icon.blue { background: rgba(56,139,253,0.2); }
+
+  .card-title {
+    font-family: var(--font-display);
+    font-size: 1rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.5px;
+  }
+
+  .card-sub { font-size: 0.8rem; color: var(--gray); }
+
+  .route-map {
+    display: flex; align-items: center; gap: 8px;
+    margin-top: 0.5rem;
+  }
+
+  .route-dot {
+    width: 10px; height: 10px; border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .route-dot.start { background: var(--teal); }
+  .route-dot.end { background: var(--orange); }
+
+  .route-line {
+    flex: 1; height: 2px;
+    background: repeating-linear-gradient(90deg, rgba(255,255,255,0.3) 0px, rgba(255,255,255,0.3) 8px, transparent 8px, transparent 16px);
+  }
+
+  .route-label {
+    font-size: 0.85rem; font-weight: 600; color: rgba(255,255,255,0.8);
+  }
+
+  .savings-bar {
+    margin-top: 1rem;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+
+  .savings-amount {
+    font-family: var(--font-display);
+    font-size: 1.4rem; font-weight: 900;
+    color: var(--teal);
+  }
+
+  .savings-label { font-size: 0.78rem; color: var(--gray); }
+
+  .counter-badge {
+    background: rgba(0,201,167,0.15);
+    border: 1px solid rgba(0,201,167,0.4);
+    border-radius: 50px;
+    padding: 0.75rem 1.5rem;
+    display: flex; align-items: center; gap: 12px;
+  }
+
+  .counter-num {
+    font-family: var(--font-display);
+    font-size: 1.6rem; font-weight: 900;
+    color: var(--teal);
+  }
+
+  .counter-text { font-size: 0.85rem; color: rgba(255,255,255,0.7); }
+
+  /* ===== SECTIONS COMMONS ===== */
+  section { padding: 6rem 2rem; }
+
+  .container { max-width: 1100px; margin: 0 auto; }
+
+  .section-tag {
+    display: inline-block;
+    font-size: 0.75rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 2px;
+    color: var(--orange);
+    margin-bottom: 1rem;
+  }
+
+  .section-title {
+    font-family: var(--font-display);
+    font-size: clamp(2.2rem, 4vw, 3.5rem);
+    font-weight: 800;
+    text-transform: uppercase;
+    line-height: 1;
+    letter-spacing: -0.5px;
+    margin-bottom: 1.5rem;
+  }
+
+  .section-title .teal { color: var(--teal); }
+  .section-title .orange { color: var(--orange); }
+
+  .section-desc {
+    font-size: 1.05rem;
+    color: rgba(255,255,255,0.65);
+    line-height: 1.7;
+    max-width: 580px;
+  }
+
+  /* ===== PROBLEMA ===== */
+  .problema { background: var(--navy); }
+
+  .problem-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1.5rem;
+    margin-top: 3.5rem;
+  }
+
+  .problem-card {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
+    padding: 1.75rem;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.3s, transform 0.3s;
+  }
+
+  .problem-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, var(--orange), var(--orange-light));
+    opacity: 0; transition: opacity 0.3s;
+  }
+
+  .problem-card:hover { border-color: rgba(244,115,28,0.3); transform: translateY(-4px); }
+  .problem-card:hover::before { opacity: 1; }
+
+  .problem-icon { font-size: 2rem; margin-bottom: 1rem; }
+
+  .problem-title {
+    font-family: var(--font-display);
+    font-size: 1.2rem; font-weight: 700;
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+  }
+
+  .problem-desc { font-size: 0.9rem; color: rgba(255,255,255,0.6); line-height: 1.6; }
+
+  /* ===== SOLUÇÃO ===== */
+  .solucao { background: var(--navy-mid); }
+
+  .solution-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;
+    margin-top: 3.5rem; align-items: start;
+  }
+
+  .solution-list { display: flex; flex-direction: column; gap: 1.25rem; }
+
+  .solution-item {
+    display: flex; gap: 1.25rem; align-items: flex-start;
+    padding: 1.5rem;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px;
+    transition: all 0.3s;
+  }
+
+  .solution-item:hover {
+    border-color: rgba(0,201,167,0.3);
+    background: rgba(0,201,167,0.05);
+  }
+
+  .solution-num {
+    width: 40px; height: 40px; border-radius: 50%;
+    background: rgba(0,201,167,0.15);
+    border: 1px solid rgba(0,201,167,0.4);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-display);
+    font-size: 1rem; font-weight: 900; color: var(--teal);
+    flex-shrink: 0;
+  }
+
+  .solution-content h4 {
+    font-family: var(--font-display);
+    font-size: 1.05rem; font-weight: 700; text-transform: uppercase;
+    margin-bottom: 0.35rem;
+  }
+
+  .solution-content p { font-size: 0.88rem; color: rgba(255,255,255,0.6); line-height: 1.5; }
+
+  .solution-visual {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 20px;
+    padding: 2rem;
+    position: sticky; top: 100px;
+  }
+
+  .mini-dashboard {
+    background: var(--navy);
+    border-radius: 14px;
+    padding: 1.25rem;
+    border: 1px solid rgba(255,255,255,0.06);
+  }
+
+  .dash-title {
+    font-size: 0.75rem; color: var(--gray);
+    text-transform: uppercase; letter-spacing: 1px;
+    margin-bottom: 1rem;
+  }
+
+  .dash-route-item {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0.75rem;
+    background: rgba(255,255,255,0.04);
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+  }
+
+  .dash-route-left { display: flex; align-items: center; gap: 8px; }
+
+  .dash-dot { width: 8px; height: 8px; border-radius: 50%; }
+  .dash-dot.teal { background: var(--teal); }
+  .dash-dot.orange { background: var(--orange); }
+  .dash-dot.gray { background: var(--gray); }
+
+  .dash-route-name { font-size: 0.85rem; font-weight: 600; }
+
+  .dash-tag {
+    font-size: 0.7rem; font-weight: 700;
+    padding: 3px 8px; border-radius: 20px;
+    text-transform: uppercase;
+  }
+
+  .dash-tag.green { background: rgba(0,201,167,0.2); color: var(--teal); }
+  .dash-tag.orange { background: rgba(244,115,28,0.2); color: var(--orange-light); }
+
+  .dash-metrics {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 0.75rem; margin-top: 1rem;
+  }
+
+  .dash-metric {
+    background: rgba(255,255,255,0.04);
+    border-radius: 8px;
+    padding: 0.75rem;
+    text-align: center;
+  }
+
+  .dash-metric-val {
+    font-family: var(--font-display);
+    font-size: 1.4rem; font-weight: 900;
+    display: block;
+  }
+
+  .dash-metric-val.teal { color: var(--teal); }
+  .dash-metric-val.orange { color: var(--orange); }
+
+  .dash-metric-label { font-size: 0.7rem; color: var(--gray); }
+
+  /* ===== COMO FUNCIONA ===== */
+  .como-funciona { background: var(--navy); }
+
+  .steps-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem; margin-top: 3.5rem; position: relative;
+  }
+
+  .steps-grid::before {
+    content: '';
+    position: absolute;
+    top: 28px; left: 15%; right: 15%; height: 2px;
+    background: repeating-linear-gradient(90deg, rgba(244,115,28,0.4) 0, rgba(244,115,28,0.4) 10px, transparent 10px, transparent 20px);
+  }
+
+  .step-card { text-align: center; position: relative; }
+
+  .step-num {
+    width: 56px; height: 56px;
+    border-radius: 50%;
+    background: var(--orange);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-display);
+    font-size: 1.4rem; font-weight: 900;
+    margin: 0 auto 1.25rem;
+    position: relative; z-index: 1;
+    box-shadow: 0 0 0 8px rgba(244,115,28,0.1);
+  }
+
+  .step-icon { font-size: 1.5rem; margin-bottom: 0.75rem; }
+
+  .step-title {
+    font-family: var(--font-display);
+    font-size: 1.1rem; font-weight: 700;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+
+  .step-desc { font-size: 0.85rem; color: rgba(255,255,255,0.55); line-height: 1.5; }
+
+  /* ===== BENEFÍCIOS ===== */
+  .beneficios { background: var(--navy-mid); }
+
+  .beneficios-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem;
+    margin-top: 3.5rem;
+  }
+
+
+
+  .beneficio-header {
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 1.75rem;
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+
+  .beneficio-header h3 {
+    font-family: var(--font-display);
+    font-size: 1.4rem; font-weight: 800;
+    text-transform: uppercase;
+  }
+
+  .beneficio-tag {
+    font-size: 0.7rem; font-weight: 700;
+    padding: 4px 10px; border-radius: 20px;
+    text-transform: uppercase; letter-spacing: 1px;
+  }
+
+  .beneficio-tag.driver { background: rgba(244,115,28,0.2); color: var(--orange-light); }
+  .beneficio-tag.company { background: rgba(0,201,167,0.2); color: var(--teal); }
+
+  .beneficio-list { display: flex; flex-direction: column; gap: 0.85rem; }
+
+  .beneficio-item {
+    display: flex; align-items: flex-start; gap: 10px;
+    font-size: 0.93rem; color: rgba(255,255,255,0.8); line-height: 1.5;
+  }
+
+  .check {
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.65rem; flex-shrink: 0; margin-top: 2px;
+  }
+
+  .check.orange { background: rgba(244,115,28,0.2); color: var(--orange); }
+  .check.teal { background: rgba(0,201,167,0.2); color: var(--teal); }
+
+  /* ===== MAPA ===== */
+  .mapa { background: var(--navy); }
+
+  .map-grid {
+    display: grid; grid-template-columns: 1.35fr 0.85fr;
+    gap: 2rem; margin-top: 3rem; align-items: start;
+  }
+
+  .map-column-left,
+  .map-column-right {
+    display: grid;
+    gap: 1.5rem;
+  }
+
+  .map-card {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 20px;
+    padding: 2rem;
+  }
+
+  .map-form { display: flex; flex-direction: column; gap: 1rem; }
+
+  .map-display {
+    padding: 1.5rem;
+  }
+
+  .gps-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    color: rgba(255,255,255,0.85);
+  }
+
+  .gps-label {
+    text-transform: uppercase;
+    font-size: 0.78rem;
+    letter-spacing: 1px;
+    color: var(--teal);
+    font-weight: 700;
+  }
+
+  .gps-subtitle {
+    font-size: 0.95rem;
+    color: rgba(255,255,255,0.7);
+  }
+
+  .gps-status {
+    background: rgba(0,201,167,0.12);
+    color: var(--teal);
+    padding: 0.5rem 0.9rem;
+    border-radius: 999px;
+    font-size: 0.82rem;
+    font-weight: 700;
+  }
+
+  .route-summary-card,
+  .stations-panel {
+    overflow: hidden;
+  }
+
+  .map-form label {
+    font-size: 0.85rem; font-weight: 700;
+    color: rgba(255,255,255,0.75);
+    text-transform: uppercase; letter-spacing: 1px;
+  }
+
+  .route-summary { display: grid; gap: 1.25rem; margin-bottom: 1.5rem; }
+
+  .route-summary-item {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 14px;
+    padding: 1rem;
+  }
+
+  .route-summary-title {
+    font-family: var(--font-display);
+    font-size: 0.9rem; font-weight: 700;
+    color: rgba(255,255,255,0.75);
+    text-transform: uppercase; letter-spacing: 1px;
+    margin-bottom: 0.35rem;
+  }
+
+  .route-summary-value {
+    font-size: 1.5rem; font-weight: 800;
+    color: var(--orange);
+  }
+
+  .map-route-line {
+    display: flex; align-items: center; gap: 0.75rem;
+    padding: 1rem 1rem 1.25rem;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
+    margin-bottom: 1.5rem;
+  }
+
+  .map-dot {
+    width: 12px; height: 12px; border-radius: 50%;
+    background: var(--orange);
+    flex-shrink: 0;
+  }
+
+  .map-canvas {
+    width: 100%;
+    height: 360px;
+    border-radius: 20px;
+    padding: 1.5rem;
+    background: radial-gradient(circle at top right, rgba(0, 119, 255, 0.08), transparent 18%),
+                radial-gradient(circle at bottom left, rgba(0, 255, 169, 0.08), transparent 18%),
+                linear-gradient(180deg, rgba(5,13,28,0.98), rgba(10,22,36,0.96));
+    border: 1px solid rgba(255,255,255,0.14);
+    margin-bottom: 1.25rem;
+    position: relative;
+    overflow: hidden;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.04);
+  }
+
+  .map-canvas::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+                      linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+    background-size: 56px 56px;
+    opacity: 0.22;
+    pointer-events: none;
+  }
+
+  .map-canvas::after {
+    content: '';
+    position: absolute;
+    inset: 12px;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
+    pointer-events: none;
+  }
+
+  .map-content {
+  position: relative;
+  z-index: 1;
+  height: 100%;
+  display: flex;
+}
+
+  .map-empty {
+    color: rgba(255,255,255,0.65);
+    font-size: 0.95rem;
+    line-height: 1.7;
+    max-width: 420px;
+  }
+
+  .map-road {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+  .map-path {
+  position: absolute;
+  left: 5%;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 90%;
+  height: 3px;
+  background: linear-gradient(90deg, #00ffa9, #0077ff);
+  z-index: 1;
+}
+
+  .map-marker {
+    position: absolute;
+    top: 50%;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.95);
+    border: 3px solid rgba(255,255,255,0.96);
+    box-shadow: 0 0 0 10px rgba(255,255,255,0.04);
+    transform: translate(-50%, -50%);
+    z-index: 2;
+  }
+
+  .map-marker.start { background: var(--teal); box-shadow: 0 0 0 10px rgba(0,201,167,0.16); }
+  .map-marker.stop { background: rgba(0,201,167,0.95); border-color: rgba(255,255,255,0.7); }
+  .map-marker.end { background: var(--orange); box-shadow: 0 0 0 10px rgba(244,115,28,0.14); }
+
+  .map-marker-label {
+  position: absolute;
+  top: 100%; /* ← começa abaixo da bolinha */
+  left: 50%;
+  transform: translateX(-50%);
+  margin-top: 12px; /* ← distância da linha */
+}
+
+  .map-marker-label strong { display: block; margin-bottom: 0.2rem; color: var(--white); }
+
+  .map-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 1rem;
+  }
+
+  .map-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.82rem;
+    color: rgba(255,255,255,0.75);
+  }
+
+  .map-legend-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--orange);
+  }
+
+  .map-legend-dot.start { background: var(--teal); }
+
+  .map-dot.start { background: var(--teal); }
+  .map-dot.end { background: var(--orange); }
+
+  .map-label {
+    font-size: 0.95rem; font-weight: 600;
+    color: rgba(255,255,255,0.85);
+    flex: 1;
+  }
+
+  .stations-list { display: flex; flex-direction: column; gap: 1rem; }
+
+  .station-card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
+    padding: 1.25rem;
+  }
+
+  .station-header {
+    display: flex; align-items: center;
+    justify-content: space-between; gap: 1rem;
+    flex-wrap: wrap; margin-bottom: 0.75rem;
+  }
+
+  .station-name {
+    font-family: var(--font-display);
+    font-size: 1rem; font-weight: 700;
+    letter-spacing: -0.5px;
+  }
+
+  .station-meta { font-size: 0.82rem; color: var(--gray); }
+
+  .station-badge {
+    background: rgba(244,115,28,0.12);
+    color: var(--orange);
+    padding: 4px 10px; border-radius: 999px;
+    font-size: 0.78rem; font-weight: 700;
+    text-transform: uppercase;
+  }
+
+  .station-amenities {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+    font-size: 0.9rem;
+    color: rgba(255,255,255,0.8);
+  }
+
+  .station-amenities span {
+    background: rgba(255,255,255,0.08);
+    padding: 0.3rem 0.65rem;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.8rem;
+  }
+
+  .station-actions { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; margin-top: 0.75rem; }
+
+  .station-reviews {
+    margin-top: 0.75rem;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease, opacity 0.3s ease;
+    opacity: 0;
+  }
+
+  .station-reviews.open {
+    max-height: 400px;
+    opacity: 1;
+  }
+
+  .review-item {
+    padding: 0.95rem 1rem;
+    background: rgba(255,255,255,0.04);
+    border-radius: 12px;
+    margin-bottom: 0.75rem;
+  }
+
+  .review-stars { color: #FFD700; margin-bottom: 0.35rem; font-size: 0.9rem; }
+  .review-text { font-size: 0.88rem; color: rgba(255,255,255,0.75); line-height: 1.6; }
+
+  .map-empty {
+    color: rgba(255,255,255,0.65);
+    padding: 1.5rem;
+    background: rgba(255,255,255,0.03);
+    border: 1px dashed rgba(255,255,255,0.15);
+    border-radius: 16px;
+  }
+
+  .map-hint { font-size: 0.9rem; color: rgba(255,255,255,0.65); }
+
+  /* ===== FAQ ===== */
+  .faq { background: var(--navy-mid); }
+
+  .faq-list {
+    margin-top: 3.5rem;
+    max-width: 720px; margin-left: auto; margin-right: auto;
+    display: flex; flex-direction: column; gap: 1rem;
+  }
+
+  .faq-item {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .faq-q {
+    width: 100%;
+    padding: 1.25rem 1.5rem;
+    display: flex; align-items: center; justify-content: space-between;
+    background: none; border: none;
+    color: var(--white);
+    font-family: var(--font-body);
+    font-size: 1rem; font-weight: 600;
+    cursor: pointer; text-align: left;
+    gap: 1rem;
+  }
+
+  .faq-q:hover { color: var(--orange); }
+
+  .faq-icon {
+    width: 24px; height: 24px; border-radius: 50%;
+    background: rgba(244,115,28,0.15);
+    border: 1px solid rgba(244,115,28,0.3);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    font-size: 0.8rem; color: var(--orange);
+    transition: transform 0.3s;
+  }
+
+  .faq-item.open .faq-icon { transform: rotate(45deg); }
+
+  .faq-a {
+    max-height: 0; overflow: hidden;
+    transition: max-height 0.3s ease;
+    padding: 0 1.5rem;
+    font-size: 0.9rem; color: rgba(255,255,255,0.65);
+    line-height: 1.7;
+  }
+
+  .faq-item.open .faq-a {
+    max-height: 300px;
+    padding-bottom: 1.25rem;
+  }
+
+  /* ===== FORMULÁRIO ===== */
+  .formulario { background: var(--navy); }
+
+  .form-container {
+    max-width: 720px; margin: 3.5rem auto 0;
+    background: var(--navy-mid);
+    border: 1px solid rgba(244,115,28,0.2);
+    border-radius: 20px;
+    padding: 3rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .form-container::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 4px;
+    background: linear-gradient(90deg, var(--orange), var(--teal));
+  }
+
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+
+  .form-group { margin-bottom: 1.5rem; }
+
+  .form-group label {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 10px;
+  line-height: 1.4;
+  cursor: pointer;
+}
+
+.form-group input[type="checkbox"] {
+  margin-top: 3px;
+}
+
+  .form-label {
+    display: block;
+    font-size: 0.82rem; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.5px;
+    color: rgba(255,255,255,0.7);
+    margin-bottom: 0.5rem;
+  }
+
+  .form-input, .form-select, .form-textarea {
+    width: 100%;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 8px;
+    color: var(--white);
+    padding: 0.85rem 1rem;
+    font-family: var(--font-body); font-size: 0.95rem;
+    transition: all 0.2s;
+    outline: none;
+  }
+
+  .form-input:focus, .form-select:focus, .form-textarea:focus {
+    border-color: rgba(244,115,28,0.5);
+    background: rgba(244,115,28,0.05);
+  }
+
+  .form-input::placeholder { color: rgba(255,255,255,0.3); }
+
+  .form-select option { background: var(--navy-mid); color: var(--white); }
+
+  .form-textarea { min-height: 100px; resize: vertical; }
+
+  .radio-group { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 0.5rem; }
+
+  .radio-label {
+    display: flex; align-items: center; gap: 8px;
+    cursor: pointer;
+  }
+
+  .radio-label input { display: none; }
+
+  .radio-btn {
+    padding: 0.5rem 1rem;
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 6px;
+    font-size: 0.85rem; font-weight: 500;
+    color: rgba(255,255,255,0.7);
+    transition: all 0.2s;
+    user-select: none;
+  }
+
+  .radio-label input:checked + .radio-btn {
+    border-color: var(--orange);
+    background: rgba(244,115,28,0.15);
+    color: var(--orange-light);
+  }
+
+  .radio-btn:hover { border-color: rgba(244,115,28,0.4); }
+
+  .checkbox-label {
+    display: flex; align-items: flex-start; gap: 10px;
+    cursor: pointer; font-size: 0.85rem; color: rgba(255,255,255,0.6);
+    line-height: 1.5;
+  }
+
+  .checkbox-label input { margin-top: 3px; accent-color: var(--orange); }
+
+  .form-submit {
+    width: 100%;
+    margin-top: 0.5rem;
+  }
+
+  /* ===== MODAL ===== */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0; z-index: 200;
+    background: rgba(0,0,0,0.85);
+    align-items: center; justify-content: center;
+    padding: 2rem;
+  }
+
+  .modal-overlay.active { display: flex; }
+
+  .modal {
+    background: var(--navy-mid);
+    border: 1px solid rgba(0,201,167,0.3);
+    border-radius: 20px;
+    padding: 3rem;
+    max-width: 480px; width: 100%;
+    text-align: center;
+    position: relative;
+  }
+
+  .modal-icon { font-size: 3.5rem; margin-bottom: 1rem; }
+
+  .modal h3 {
+    font-family: var(--font-display);
+    font-size: 2rem; font-weight: 800;
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+  }
+
+  .modal p { color: rgba(255,255,255,0.7); line-height: 1.6; margin-bottom: 1.5rem; }
+
+  .modal-close {
+    background: var(--teal);
+    color: var(--navy);
+    border: none; cursor: pointer;
+    padding: 0.85rem 2rem;
+    border-radius: 8px;
+    font-family: var(--font-display);
+    font-size: 1rem; font-weight: 700;
+    text-transform: uppercase;
+    transition: background 0.2s;
+  }
+
+  .modal-close:hover { background: var(--teal-dark); }
+
+  /* ===== WHATSAPP ===== */
+  .whatsapp-float {
+    position: fixed; bottom: 2rem; right: 2rem; z-index: 150;
+  }
+
+  .whatsapp-btn {
+    width: 60px; height: 60px; border-radius: 50%;
+    background: #25D366;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 4px 20px rgba(37,211,102,0.4);
+    transition: all 0.3s;
+    cursor: pointer;
+    border: none;
+    animation: floatWA 3s ease-in-out infinite;
+  }
+
+  @keyframes floatWA {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
+  }
+
+  .whatsapp-btn:hover {
+    transform: scale(1.1) translateY(0) !important;
+    animation-play-state: paused;
+    box-shadow: 0 8px 30px rgba(37,211,102,0.6);
+  }
+
+  .whatsapp-btn svg { width: 30px; height: 30px; fill: white; }
+
+  .whatsapp-tooltip {
+    position: absolute; right: 70px; top: 50%;
+    transform: translateY(-50%);
+    background: var(--navy-mid);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 8px;
+    padding: 6px 12px;
+    font-size: 0.82rem; white-space: nowrap;
+    color: var(--white);
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.2s;
+  }
+
+  .whatsapp-float:hover .whatsapp-tooltip { opacity: 1; }
+
+  /* ===== FOOTER ===== */
+  footer {
+    background: #080F18;
+    padding: 3rem 2rem 2rem;
+    border-top: 1px solid rgba(255,255,255,0.06);
+  }
+
+  .footer-grid {
+    max-width: 1100px; margin: 0 auto;
+    display: grid; grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 2.5rem; margin-bottom: 2.5rem;
+  }
+
+  
+
+  .footer-logo {
+    font-family: var(--font-display);
+    font-size: 1.8rem; font-weight: 900;
+    margin-bottom: 0.75rem;
+  }
+
+  .footer-logo span { color: var(--orange); }
+
+  .footer-brand p {
+    font-size: 0.85rem; color: var(--gray);
+    line-height: 1.7; max-width: 260px;
+    margin-bottom: 1rem;
+  }
+
+  .footer-col h4 {
+    font-family: var(--font-display);
+    font-size: 0.85rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 1px;
+    color: rgba(255,255,255,0.5);
+    margin-bottom: 1rem;
+  }
+
+  .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; }
+
+  .footer-col a {
+    font-size: 0.88rem; color: rgba(255,255,255,0.6);
+    text-decoration: none; transition: color 0.2s;
+  }
+
+  .footer-col a:hover { color: var(--orange); }
+
+  .footer-bottom {
+    max-width: 1100px; margin: 0 auto;
+    display: flex; align-items: center; justify-content: space-between;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    font-size: 0.8rem; color: rgba(255,255,255,0.35);
+  }
+
+  .footer-bottom a { color: var(--orange); text-decoration: none; }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 768px) {
+    nav ul { display: none; }
+
+    .hero-content { grid-template-columns: 1fr; gap: 2.5rem; }
+    .hero-visual { display: none; }
+    .hero-stats { gap: 1.5rem; }
+
+    .problem-grid { grid-template-columns: 1fr; }
+
+    .solution-grid { grid-template-columns: 1fr; }
+    .solution-visual { display: none; }
+
+    .steps-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+    .steps-grid::before { display: none; }
+
+    .beneficios-grid { grid-template-columns: 1fr; }
+
+    .map-grid { grid-template-columns: 1fr; }
+
+    .depo-grid { grid-template-columns: 1fr; }
+
+    .form-row { grid-template-columns: 1fr; }
+
+    .footer-grid { grid-template-columns: 1fr; }
+    .footer-bottom { flex-direction: column; gap: 0.5rem; text-align: center; }
+  }
+
+  /* ===== ANIMATIONS ===== */
+  .fade-in {
+    opacity: 0; transform: translateY(30px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+
+  .fade-in.visible { opacity: 1; transform: translateY(0); }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">Pit<span>StopBR</span></div>
+  <ul>
+    <li><a href="#problema">O Problema</a></li>
+    <li><a href="#solucao">Solução</a></li>
+    <li><a href="#mapa">Mapa</a></li>
+    <li><a href="#como-funciona">Como Funciona</a></li>
+    <li><a href="#faq">FAQ</a></li>
+    <li><a href="#cadastro" class="nav-cta">Quero Participar</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="road-lines"><div class="road-line"></div></div>
+
+  <div class="hero-content">
+    <div>
+      <div class="hero-badge">
+        <div class="badge-dot"></div>
+        Validação aberta · Acesso antecipado
+      </div>
+
+      <h1>
+        A estrada
+        <span class="accent">ficou mais fácil</span>
+        pra você.
+      </h1>
+
+      <p class="sub">
+        PitStopBR é a plataforma que conecta caminhoneiros autônomos a fretes rentáveis, postos mais baratos e pernoites seguros — tudo no celular, direto da cabine.
+      </p>
+
+      <div class="hero-ctas">
+        <a href="#cadastro" class="btn-primary">
+          🚛 Quero ser o primeiro
+        </a>
+        <a href="#cadastro" class="btn-secondary">
+          🏢 Sou empresa / posto
+        </a>
+      </div>
+    </div>
+
+    <div class="hero-visual fade-in">
+      <div class="hero-image">
+        <img src="imagens\caminhaobranco.jpg" alt="Caminhão na estrada" />
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROBLEMA -->
+<section class="problema" id="problema">
+  <div class="container">
+    <div class="fade-in">
+      <div class="section-tag">O Problema</div>
+      <h2 class="section-title">A estrada tá pesada.<br><span class="orange">A gente sabe.</span></h2>
+      <p class="section-desc">Falamos com dezenas de caminhoneiros. As dificuldades são as mesmas. E elas custam caro todo mês.</p>
+    </div>
+
+    <div class="problem-grid">
+      <div class="problem-card fade-in">
+        <div class="problem-icon">⛽</div>
+        <div class="problem-title">Combustível caro e sem critério</div>
+        <p class="problem-desc">Você abastece no posto que aparece, sem saber se tem um muito mais barato a 5km. Isso representa perdas de centenas de reais por mês.</p>
+      </div>
+
+      <div class="problem-card fade-in">
+        <div class="problem-icon">🌙</div>
+        <div class="problem-title">Pernoite inseguro ou ruim</div>
+        <p class="problem-desc">Difícil saber com antecedência se o local tem estrutura, segurança e está em boas condições. Muitas vezes você fica na dúvida até chegar lá.</p>
+      </div>
+
+      <div class="problem-card fade-in">
+        <div class="problem-icon">📦</div>
+        <div class="problem-title">Fretes ruins ou caminhão vazio</div>
+        <p class="problem-desc">Voltar vazio é dinheiro jogado fora. Mas encontrar carga de retorno confiável e com boa remuneração ainda é difícil e leva tempo.</p>
+      </div>
+
+      <div class="problem-card fade-in">
+        <div class="problem-icon">🤝</div>
+        <div class="problem-title">Falta de rede de apoio</div>
+        <p class="problem-desc">Na estrada, você está sozinho. Sem quem indicar um mecânico, um posto confiável, ou ajudar em caso de imprevisto durante a viagem.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SOLUÇÃO -->
+<section class="solucao" id="solucao">
+  <div class="container">
+    <div class="fade-in">
+      <div class="section-tag">A Solução</div>
+      <h2 class="section-title">Tudo que você<br><span class="teal">precisa na tela.</span></h2>
+      <p class="section-desc">PitStopBR coloca na sua mão as ferramentas pra rodar com mais economia, segurança e dignidade.</p>
+    </div>
+
+    <div class="solution-grid">
+      <div class="solution-list fade-in">
+        <div class="solution-item">
+          <div class="solution-num">1</div>
+          <div class="solution-content">
+            <h4>Postos mais baratos na sua rota</h4>
+            <p>Compare preços de combustível em tempo real e economize em cada abastecimento. Alertas automáticos quando encontrar o melhor preço no caminho.</p>
+          </div>
+        </div>
+
+        <div class="solution-item">
+          <div class="solution-num">2</div>
+          <div class="solution-content">
+            <h4>Pernoites avaliados por quem rodou</h4>
+            <p>Veja avaliações reais de outros caminhoneiros. Chuveiro, câmera, refeitório, estacionamento seguro. Sem surpresa ao chegar.</p>
+          </div>
+        </div>
+
+        <div class="solution-item">
+          <div class="solution-num">3</div>
+          <div class="solution-content">
+            <h4>Fretes direto sem intermediários</h4>
+            <p>Conecte-se com empresas e consiga carga de retorno. Sem corretores, sem taxa absurda. O combinado chega direto pra você.</p>
+          </div>
+        </div>
+
+        <div class="solution-item">
+          <div class="solution-num">4</div>
+          <div class="solution-content">
+            <h4>Comunidade e rede de apoio</h4>
+            <p>Uma rede de caminhoneiros que se ajudam na estrada. Informações sobre trechos, bloqueios, mecânicos de confiança e muito mais.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="solution-visual fade-in">
+        <p style="font-size:0.75rem;color:var(--gray);text-transform:uppercase;letter-spacing:1px;margin-bottom:1rem">Preview do painel</p>
+        <div class="mini-dashboard">
+          <div class="dash-title">Suas rotas ativas</div>
+          <div class="dash-route-item">
+            <div class="dash-route-left">
+              <div class="dash-dot teal"></div>
+              <div class="dash-route-name">SP → BH</div>
+            </div>
+            <div class="dash-tag green">Ativa</div>
+          </div>
+          <div class="dash-route-item">
+            <div class="dash-route-left">
+              <div class="dash-dot orange"></div>
+              <div class="dash-route-name">BH → RJ</div>
+            </div>
+            <div class="dash-tag orange">Pendente</div>
+          </div>
+          <div class="dash-route-item">
+            <div class="dash-route-left">
+              <div class="dash-dot gray"></div>
+              <div class="dash-route-name">RJ → SP</div>
+            </div>
+            <div class="dash-tag green">Confirmada</div>
+          </div>
+
+          <div class="dash-metrics">
+            <div class="dash-metric">
+              <span class="dash-metric-val teal">R$2.140</span>
+              <div class="dash-metric-label">Economizado este mês</div>
+            </div>
+            <div class="dash-metric">
+              <span class="dash-metric-val orange">12</span>
+              <div class="dash-metric-label">Fretes realizados</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top:1rem;padding:1.25rem;background:rgba(0,201,167,0.08);border:1px solid rgba(0,201,167,0.2);border-radius:12px">
+          <div style="font-size:0.8rem;color:var(--teal);font-weight:600;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:0.5rem">🛏️ Pernoite recomendado</div>
+          <div style="font-size:0.9rem;font-weight:600">Posto Bom Descanso — km 315</div>
+          <div style="font-size:0.8rem;color:var(--gray);margin-top:3px">⭐ 4.9 · Câmera · Chuveiro · Wi-Fi · Refeitório</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COMO FUNCIONA -->
+<section class="como-funciona" id="como-funciona">
+  <div class="container">
+    <div class="fade-in" style="text-align:center">
+      <div class="section-tag">Como Funciona</div>
+      <h2 class="section-title">Simples. <span class="orange">Rápido.</span> Na palma da mão.</h2>
+    </div>
+
+    <div class="steps-grid fade-in">
+      <div class="step-card">
+        <div class="step-num">1</div>
+        <div class="step-icon">📱</div>
+        <div class="step-title">Crie seu perfil</div>
+        <p class="step-desc">Cadastre seu veículo, rotas frequentes e preferências. Leva menos de 3 minutos.</p>
+      </div>
+
+      <div class="step-card">
+        <div class="step-num">2</div>
+        <div class="step-icon">🗺️</div>
+        <div class="step-title">Planeje a rota</div>
+        <p class="step-desc">Veja postos baratos, pernoites seguros e fretes disponíveis ao longo do trajeto.</p>
+      </div>
+
+      <div class="step-card">
+        <div class="step-num">3</div>
+        <div class="step-icon">🤝</div>
+        <div class="step-title">Aceite o frete</div>
+        <p class="step-desc">Conecte com a empresa, acerte os detalhes e saia rodando sem burocracia.</p>
+      </div>
+
+      <div class="step-card">
+        <div class="step-num">4</div>
+        <div class="step-icon">💰</div>
+        <div class="step-title">Receba e avalie</div>
+        <p class="step-desc">Pagamento seguro e avaliação mútua. Sua reputação abre portas pra fretes melhores.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BENEFÍCIOS -->
+<section class="beneficios" id="beneficios">
+  <div class="container">
+    <div class="fade-in">
+      <div class="section-tag">Benefícios</div>
+      <h2 class="section-title">Para você e para<br><span class="teal">quem contrata.</span></h2>
+    </div>
+
+    <div class="beneficios-grid fade-in">
+      <div class="beneficio-column">
+        <div class="beneficio-header">
+          <span style="font-size:1.5rem">🚛</span>
+          <div>
+            <h3>Caminhoneiro</h3>
+            <span class="beneficio-tag driver">Autônomo</span>
+          </div>
+        </div>
+        <div class="beneficio-list">
+          <div class="beneficio-item"><div class="check orange">✓</div>Economize até 30% no combustível por mês</div>
+          <div class="beneficio-item"><div class="check orange">✓</div>Pernoites avaliados por outros caminhoneiros</div>
+          <div class="beneficio-item"><div class="check orange">✓</div>Fretes de retorno — não volta mais vazio</div>
+          <div class="beneficio-item"><div class="check orange">✓</div>Comunidade de apoio na estrada</div>
+          <div class="beneficio-item"><div class="check orange">✓</div>Histórico de rotas e relatório de ganhos</div>
+          <div class="beneficio-item"><div class="check orange">✓</div>Alertas de bloqueios, trechos ruins e roubo</div>
+          <div class="beneficio-item"><div class="check orange">✓</div>Assinatura acessível com frete grátis nos primeiros meses</div>
+        </div>
+      </div>
+
+      <div class="beneficio-column">
+        <div class="beneficio-header">
+          <span style="font-size:1.5rem">🏢</span>
+          <div>
+            <h3>Empresa / Posto</h3>
+            <span class="beneficio-tag company">Parceiro</span>
+          </div>
+        </div>
+        <div class="beneficio-list">
+          <div class="beneficio-item"><div class="check teal">✓</div>Acesso a rede de caminhoneiros verificados</div>
+          <div class="beneficio-item"><div class="check teal">✓</div>Frete com custo operacional reduzido</div>
+          <div class="beneficio-item"><div class="check teal">✓</div>Flexibilidade de contratação por demanda</div>
+          <div class="beneficio-item"><div class="check teal">✓</div>Rastreamento e acompanhamento em tempo real</div>
+          <div class="beneficio-item"><div class="check teal">✓</div>Avaliação de motoristas com histórico confiável</div>
+          <div class="beneficio-item"><div class="check teal">✓</div>Dashboard com gestão de fretes e rotas</div>
+          <div class="beneficio-item"><div class="check teal">✓</div>Sem burocracia — tudo digital e assinado online</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MAPA -->
+<section class="mapa" id="mapa">
+  <div class="container">
+    <div class="fade-in" style="text-align:center">
+      <div class="section-tag">Mapa</div>
+      <h2 class="section-title">Trace a rota e veja os postos<br><span class="teal">e avaliações no caminho.</span></h2>
+      <p class="section-desc">Informe a origem e o destino, calcule o tempo de percurso e visualize postos avaliados durante o trajeto.</p>
+    </div>
+
+    <div class="map-grid fade-in">
+      <div class="map-column-left">
+        <div class="map-card map-form">
+          <div>
+            <label for="origin">Local de partida</label>
+            <input id="origin" list="city-options" class="form-input" placeholder="Ex: Curitiba" required>
+          </div>
+
+          <div>
+            <label for="destination">Destino</label>
+            <input id="destination" list="city-options" class="form-input" placeholder="Ex: São Paulo" required>
+          </div>
+
+          <datalist id="city-options">
+            <option value="Curitiba">
+            <option value="São Paulo">
+            <option value="Belo Horizonte">
+            <option value="Rio de Janeiro">
+            <option value="Campinas">
+            <option value="Porto Alegre">
+            <option value="Vitória">
+            <option value="Brasília">
+          </datalist>
+
+          <button type="button" class="btn-primary" onclick="calculateRoute()">Calcular rota</button>
+          <p class="map-hint">Use as cidades sugeridas ou informe outra combinação para receber uma rota estimada e postos no caminho.</p>
+        </div>
+
+        <div class="map-card map-display">
+          <div class="gps-header">
+            <div>
+              <div class="gps-label">Navegação</div>
+              <div class="gps-subtitle">Painel estilo GPS</div>
+            </div>
+            <div class="gps-status">Trajeto ativo</div>
+          </div>
+          <div class="map-canvas" id="mapCanvas">
+            <div class="map-empty">Escolha origem e destino e clique em calcular para ver o mapa da rota.</div>
+          </div>
+          <div class="map-legend">
+            <div class="map-legend-item"><span class="map-legend-dot start"></span>Origem</div>
+            <div class="map-legend-item"><span class="map-legend-dot"></span>Postos no caminho</div>
+            <div class="map-legend-item"><span class="map-legend-dot end"></span>Destino</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="map-column-right">
+        <div class="map-card route-summary-card">
+          <div class="route-summary" id="routeSummary">
+            <div class="route-summary-item">
+              <div class="route-summary-title">Tempo estimado</div>
+              <div class="route-summary-value" id="routeTime">--</div>
+            </div>
+            <div class="route-summary-item">
+              <div class="route-summary-title">Distância</div>
+              <div class="route-summary-value" id="routeDistance">--</div>
+            </div>
+            <div class="route-summary-item">
+              <div class="route-summary-title">Postos no percurso</div>
+              <div class="route-summary-value" id="routeStations">--</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="map-card stations-panel">
+          <div class="map-route-line">
+            <div class="map-dot start"></div>
+            <div class="map-label" id="routeStopsLabel">Nenhuma rota selecionada</div>
+            <div class="map-dot end"></div>
+          </div>
+
+          <div class="stations-list" id="stationsList">
+            <div class="map-empty">Preencha origem e destino e clique em calcular para ver os postos e suas avaliações.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="faq" id="faq">
+  <div class="container">
+    <div class="fade-in" style="text-align:center">
+      <div class="section-tag">Perguntas Frequentes</div>
+      <h2 class="section-title">Tá com dúvida?<br><span class="teal">A gente explica.</span></h2>
+    </div>
+
+    <div class="faq-list fade-in">
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Quanto custa usar a PitStopBR?
+          <div class="faq-icon">+</div>
+        </button>
+        <div class="faq-a">A plataforma funcionará com um modelo de assinatura acessível, pensado no bolso do caminhoneiro autônomo. Durante a fase de validação, o acesso é gratuito para os primeiros cadastros. Os primeiros a entrar terão condições especiais permanentes.</div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Como funciona o frete grátis mencionado?
+          <div class="faq-icon">+</div>
+        </button>
+        <div class="faq-a">Dentro do plano de assinatura, você terá um número de fretes com taxa zero por mês. Ou seja, a plataforma não cobra comissão em cima desses fretes selecionados, aumentando seu lucro direto.</div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Como os preços de combustível são atualizados?
+          <div class="faq-icon">+</div>
+        </button>
+        <div class="faq-a">Os preços são atualizados em tempo real por três fontes: dados oficiais da ANP, atualizações da própria comunidade de caminhoneiros e integração com postos parceiros. Você sempre verá o preço mais recente disponível.</div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Precisa ter smartphone moderno?
+          <div class="faq-icon">+</div>
+        </button>
+        <div class="faq-a">Não. O aplicativo foi desenvolvido pensando em celulares intermediários com Android, que são os mais comuns entre os caminhoneiros. Funciona bem mesmo com internet 3G e em áreas com sinal fraco.</div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Sou empresa pequena. Posso usar também?
+          <div class="faq-icon">+</div>
+        </button>
+        <div class="faq-a">Com certeza. A plataforma atende desde autônomos independentes até transportadoras de pequeno e médio porte. Para empresas, há um painel de gestão com controle de múltiplas rotas e motoristas.</div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          E a segurança dos meus dados?
+          <div class="faq-icon">+</div>
+        </button>
+        <div class="faq-a">Seus dados são protegidos com criptografia de ponta a ponta e seguimos todas as normas da LGPD. Nenhuma informação sua é vendida ou compartilhada com terceiros sem sua autorização expressa.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FORMULÁRIO -->
+<section class="formulario" id="cadastro">
+  <div class="container">
+    <div class="fade-in" style="text-align:center">
+      <div class="section-tag">Acesso Antecipado</div>
+      <h2 class="section-title">Entre na lista.<br><span class="orange">Sem custo nenhum.</span></h2>
+      <p class="section-desc" style="margin:0 auto">Cadastre-se agora e garanta condições exclusivas. Os primeiros terão vantagens permanentes na plataforma.</p>
+    </div>
+
+    <div class="form-container fade-in">
+      <form id="mainForm" onsubmit="submitForm(event)">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Seu nome</label>
+            <input type="text" class="form-input" placeholder="Ex: João da Silva" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">WhatsApp / Telefone</label>
+            <input type="tel" class="form-input" placeholder="(00) 9 0000-0000" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Você é...</label>
+          <div class="radio-group">
+            <label class="radio-label">
+              <input type="radio" name="tipo" value="caminhoneiro" required>
+              <span class="radio-btn">🚛 Caminhoneiro autônomo</span>
+            </label>
+            <label class="radio-label">
+              <input type="radio" name="tipo" value="empresa">
+              <span class="radio-btn">🏢 Empresa de transporte</span>
+            </label>
+            <label class="radio-label">
+              <input type="radio" name="tipo" value="posto">
+              <span class="radio-btn">⛽ Posto / Ponto de parada</span>
+            </label>
+            <label class="radio-label">
+              <input type="radio" name="tipo" value="outro">
+              <span class="radio-btn">🔧 Outro</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="form-group">
+  <p>Qual sua maior dificuldade hoje? (pode marcar mais de uma)</p>
+
+  <label>
+    <input type="checkbox" name="dificuldade" value="combustivel">
+    Custo alto com combustível / não sei onde abastecer mais barato
+  </label>
+
+  <label>
+    <input type="checkbox" name="dificuldade" value="pernoite">
+    Dificuldade para encontrar pernoite seguro e de qualidade
+  </label>
+
+  <label>
+    <input type="checkbox" name="dificuldade" value="fretes">
+    Falta de fretes bons ou caminhão voltando vazio
+  </label>
+
+  <label>
+    <input type="checkbox" name="dificuldade" value="rede">
+    Falta de rede de apoio e informações confiáveis na estrada
+  </label>
+
+  <label>
+    <input type="checkbox" name="dificuldade" value="manutencao">
+    Manutenção e imprevistos mecânicos sem suporte
+  </label>
+</div>
+
+        <div class="form-group">
+          <label class="form-label">Quantas viagens você faz por mês? (opcional)</label>
+          <select class="form-select">
+            <option value="" disabled selected>Selecione...</option>
+            <option>1 a 4 viagens</option>
+            <option>5 a 10 viagens</option>
+            <option>Mais de 10 viagens</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Algum comentário ou sugestão? (opcional)</label>
+          <textarea class="form-textarea" placeholder="Ex: Minha maior dificuldade é..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="checkbox-label">
+            <input type="checkbox" required>
+            Concordo em participar desta pesquisa de validação e receber atualizações sobre a PitStopBR pelo WhatsApp. Nenhum spam — só o que interessa.
+          </label>
+        </div>
+
+        <button type="submit" class="btn-primary form-submit">
+          🚛 Garantir meu lugar na fila
+        </button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="footer-logo">Pit<span>StopBR</span></div>
+      <p>A plataforma que conecta caminhoneiros autônomos a melhores fretes, combustível mais barato e pernoites seguros.</p>
+      <div style="display:flex;gap:12px">
+        <a href="#" style="color:var(--orange);font-size:1.1rem;text-decoration:none">📘</a>
+        <a href="#" style="color:var(--orange);font-size:1.1rem;text-decoration:none">📸</a>
+        <a href="#" style="color:var(--orange);font-size:1.1rem;text-decoration:none">💬</a>
+      </div>
+    </div>
+
+    <div class="footer-col">
+      <h4>Plataforma</h4>
+      <ul>
+        <li><a href="#solucao">Como funciona</a></li>
+        <li><a href="#beneficios">Benefícios</a></li>
+        <li><a href="#cadastro">Acesso antecipado</a></li>
+        <li><a href="#">Para empresas</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-col">
+      <h4>Empresa</h4>
+      <ul>
+        <li><a href="#">Sobre nós</a></li>
+        <li><a href="#">Imprensa</a></li>
+        <li><a href="#">Parceiros</a></li>
+        <li><a href="#">Contato</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-col">
+      <h4>Legal</h4>
+      <ul>
+        <li><a href="#">Termos de uso</a></li>
+        <li><a href="#">Privacidade (LGPD)</a></li>
+        <li><a href="#">Política de cookies</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <span>© 2025 PitStopBR. Todos os direitos reservados.</span>
+    <span>Feito praquem vive na estrada · <a href="#">contato@pitstopbr.com.br</a></span>
+  </div>
+</footer>
+
+<!-- WHATSAPP FLOAT -->
+<div class="whatsapp-float">
+  <div class="whatsapp-tooltip">Fala com a gente!</div>
+  <button class="whatsapp-btn" onclick="window.open('https://wa.me/5555991167000?text=Oi! Quero saber mais sobre a PitStopBR','_blank')">
+    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+    </svg>
+  </button>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <div class="modal-icon">🎉</div>
+    <h3>Você entrou!</h3>
+    <p>Cadastro confirmado. Você é um dos primeiros a garantir acesso antecipado à PitStopBR. Em breve você vai receber novidades no WhatsApp.<br><br>Obrigado por fazer parte disso. <strong>A estrada vai ficar muito melhor.</strong></p>
+    <button class="modal-close" onclick="closeModal()">Fechou, valeu!</button>
+  </div>
+</div>
+
+<script>
+  // Counter animation
+  let count = 247;
+  const counterEl = document.getElementById('counter');
+  let animated = false;
+
+  function animateCounter() {
+    if (!counterEl || animated) return;
+    animated = true;
+    let current = 0;
+    const step = Math.ceil(count / 60);
+    const timer = setInterval(() => {
+      current = Math.min(current + step, count);
+      counterEl.textContent = current;
+      if (current >= count) clearInterval(timer);
+    }, 30);
+  }
+
+  // Intersection observer for fade-in and counter
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        if (entry.target.id === 'counter') animateCounter();
+      }
+    });
+  }, { threshold: 0.15 });
+
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+  if (counterEl) observer.observe(counterEl);
+
+  // FAQ toggle
+  function toggleFaq(btn) {
+    const item = btn.parentElement;
+    const isOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+    if (!isOpen) item.classList.add('open');
+  }
+
+  // Form submit
+  function submitForm(e) {
+    e.preventDefault();
+    count++;
+    if (counterEl) counterEl.textContent = count;
+    const counterNumEl = document.querySelector('.counter-num');
+    if (counterNumEl) counterNumEl.textContent = '🔥 ' + count;
+    const modalEl = document.getElementById('modal');
+    if (modalEl) modalEl.classList.add('active');
+    e.target.reset();
+  }
+
+  function closeModal() {
+    const modalEl = document.getElementById('modal');
+    if (modalEl) modalEl.classList.remove('active');
+  }
+
+  // Close modal clicking outside
+  const modalClickTarget = document.getElementById('modal');
+  if (modalClickTarget) {
+    modalClickTarget.addEventListener('click', function(e) {
+      if (e.target === this) closeModal();
+    });
+  }
+
+  // Route data and map controls
+  const routeDatabase = {
+    'curitiba|sao paulo': {
+      distance: 418,
+      duration: 320,
+      stops: [
+        {
+          name: 'Posto Boa Vista',
+          km: 120,
+          price: 'R$ 5,39',
+          badge: 'Abastecimento',
+          amenities: ['descanso', 'banheiro', 'restaurante'],
+          reviews: [
+            { stars: '★★★★★', text: 'Ótimo preço e atendimento rápido. Banheiro limpo e ar-condicionado funcionando.' },
+            { stars: '★★★★☆', text: 'Combustível de qualidade e loja bem abastecida. Perfeito para uma parada rápida.' }
+          ]
+        },
+        {
+          name: 'Posto Estrada Real',
+          km: 240,
+          price: 'R$ 5,27',
+          badge: 'Café e descanso',
+          amenities: ['patio seguro', 'banheiro', 'restaurante'],
+          reviews: [
+            { stars: '★★★★★', text: 'Lugar seguro para pernoite e bom café. Vagas para caminhão com iluminação.' },
+            { stars: '★★★★☆', text: 'O banho é limpo e os motoristas são tranquilos. Recomendo para paradas curtas.' }
+          ]
+        },
+        {
+          name: 'Posto Cruzeiro',
+          km: 360,
+          price: 'R$ 5,42',
+          badge: 'Último ponto',
+          amenities: ['descanso', 'patio seguro'],
+          reviews: [
+            { stars: '★★★★★', text: 'Última parada antes de São Paulo. Ideal para ajustar carga e descansar um pouco.' },
+            { stars: '★★★★☆', text: 'Atendimento cordial e diesel disponível sem esperas longas.' }
+          ]
+        }
+      ]
+    },
+
+    'porto alegre|sao paulo': {
+  distance: 1144,
+  duration: 870, // 14h30 = 870 minutos
+  stops: [
+    {
+      name: 'Posto Segura',
+      km: 300,
+      price: 'R$ 5,39',
+      badge: 'Parada',
+      amenities: ['descanso', 'banheiro'],
+      reviews: [
+        { stars: '★★★★★', text: 'Boa parada para descanso e abastecimento.' }
+      ]
+    },
+    {
+      name: 'Posto Azul',
+      km: 650,
+      price: 'R$ 5,29',
+      badge: 'Café',
+      amenities: ['restaurante', 'banheiro'],
+      reviews: [
+        { stars: '★★★★☆', text: 'Bom atendimento e comida rápida.' }
+      ]
+    },
+    {
+      name: 'Posto Final',
+      km: 950,
+      price: 'R$ 5,45',
+      badge: 'Última parada',
+      amenities: ['descanso'],
+      reviews: [
+        { stars: '★★★★★', text: 'Última parada antes de chegar ao destino.' }
+      ]
+    }
+  ]
+},
+
+    'sao paulo|rio de janeiro': {
+      distance: 430,
+      duration: 360,
+      stops: [
+        {
+          name: 'Posto Arco-Íris',
+          km: 90,
+          price: 'R$ 5,45',
+          badge: 'Parada de apoio',
+          amenities: ['banheiro', 'restaurante'],
+          reviews: [
+            { stars: '★★★★★', text: 'Ótima estrutura para caminhoneiros. Tem refeitório e área de descanso.' }
+          ]
+        },
+        {
+          name: 'Posto Vista Leste',
+          km: 210,
+          price: 'R$ 5,33',
+          badge: 'Café e banho',
+          amenities: ['descanso', 'banheiro', 'restaurante', 'patio seguro'],
+          reviews: [
+            { stars: '★★★★☆', text: 'Banheiros limpos e atendimento ágil. Afrouxaram o pagamento no cartão.' }
+          ]
+        },
+        {
+          name: 'Posto Caminho Seguro',
+          km: 330,
+          price: 'R$ 5,56',
+          badge: 'Opção final',
+          amenities: ['patio seguro', 'banheiro'],
+          reviews: [
+            { stars: '★★★★★', text: 'Equipe experiente, bom preço e posto bem iluminado.' }
+          ]
+        }
+      ]
+    },
+    'belo horizonte|campinas': {
+      distance: 570,
+      duration: 450,
+      stops: [
+        {
+          name: 'Posto Mont Serrat',
+          km: 145,
+          price: 'R$ 5,31',
+          badge: 'Parada técnica',
+          amenities: ['descanso', 'restaurante', 'banheiro'],
+          reviews: [
+            { stars: '★★★★★', text: 'Excelente para caminhoneiros. Vagas largas e restaurante 24h.' }]
+        },
+        {
+          name: 'Posto Boa Viagem',
+          km: 330,
+          price: 'R$ 5,22',
+          badge: 'Abastecimento',
+          amenities: ['patio seguro', 'banheiro'],
+          reviews: [
+            { stars: '★★★★☆', text: 'Preço competitivo e tratamento cordial. Indico para quem quer seguir tranquilo.' }]
+        },
+        {
+          name: 'Posto Vale Verde',
+          km: 490,
+          price: 'R$ 5,40',
+          badge: 'Descanso',
+          amenities: ['descanso', 'restaurante', 'banheiro', 'patio seguro'],
+          reviews: [
+            { stars: '★★★★☆', text: 'Ótima última parada antes de Campinas. Segurança e restaurante ok.' }]
+        }
+      ]
+    }
+  };
+
+  const amenityIcons = {
+    'descanso': '🛏️',
+    'patio seguro': '🅿️',
+    'banheiro': '🚻',
+    'restaurante': '🍽️'
+  };
+
+  function formatDuration(minutes) {
+    if (minutes < 60) return `${minutes} min`;
+    const hours = Math.floor(minutes / 60);
+    const mins = minutes % 60;
+    return `${hours}h ${mins}m`;
+  }
+
+  function renderStations(stops) {
+    const container = document.getElementById('stationsList');
+    container.innerHTML = '';
+    stops.forEach((stop, index) => {
+      const station = document.createElement('div');
+      station.className = 'station-card';
+      station.innerHTML = `
+        <div class="station-header">
+          <div>
+            <div class="station-name">${stop.name}</div>
+            <div class="station-meta">km ${stop.km} · ${stop.price}</div>
+          </div>
+          <div class="station-badge">${stop.badge}</div>
+        </div>
+        <div class="station-amenities">
+          ${stop.amenities.map(a => `<span>${amenityIcons[a] || ''} ${a}</span>`).join('')}
+        </div>
+        <div class="station-actions">
+          <div class="station-meta">Avaliações reais</div>
+          <button class="btn-secondary" type="button" onclick="toggleReviews(${index})">Ver avaliações</button>
+        </div>
+        <div class="station-reviews" id="stationReviews${index}">
+          ${stop.reviews.map(review => `
+            <div class="review-item">
+              <div class="review-stars">${review.stars}</div>
+              <div class="review-text">${review.text}</div>
+            </div>
+          `).join('')}
+        </div>
+      `;
+      container.appendChild(station);
+    });
+  }
+
+  function toggleReviews(index) {
+    const element = document.getElementById(`stationReviews${index}`);
+    if (!element) return;
+    element.classList.toggle('open');
+  }
+
+  function renderMap(route, origin, destination) {
+    const canvas = document.getElementById('mapCanvas');
+    if (!canvas) return;
+    if (!route || !route.stops || !route.stops.length) {
+      canvas.innerHTML = '<div class="map-empty">Escolha origem e destino e clique em calcular para ver a rota.</div>';
+      return;
+    }
+
+    const stops = route.stops;
+
+const points = [
+  { type: 'start', label: 'Origem', detail: origin },
+  ...stops.map(stop => ({
+    type: 'stop',
+    label: stop.name.includes("Segura") ? "Posto Segura"
+     : stop.name.includes("Azul") ? "Posto Azul"
+     : stop.name.includes("Final") ? "Posto Final"
+     : "Posto",
+
+detail: ""
+  })),
+  { type: 'end', label: 'Destino', detail: destination }
+];
+
+// 🔥 Distribuição automática na largura inteira
+const total = points.length;
+
+points.forEach((point, index) => {
+  point.left = `${5 + (index / (total - 1)) * 90}%`;
+});
+
+    canvas.innerHTML = `
+      <div class="map-content">
+        <div class="map-road">
+          <div class="map-path"></div>
+          ${points.map(point => `
+  <div class="map-marker ${point.type}" style="left: ${point.left};"></div>
+`).join('')}
+        </div>
+      </div>
+    `;
+  }
+
+  function normalizeCity(value) {
+    return value.trim().toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '');
+  }
+
+  function calculateRoute() {
+    const rawOrigin = document.getElementById('origin').value;
+    const rawDestination = document.getElementById('destination').value;
+    const origin = normalizeCity(rawOrigin);
+    const destination = normalizeCity(rawDestination);
+    if (!origin || !destination || origin === destination) {
+      alert('Informe origem e destino diferentes para calcular a rota.');
+      return;
+    }
+
+    const key = `${origin}|${destination}`;
+    const reverseKey = `${destination}|${origin}`;
+    const route = routeDatabase[key] || routeDatabase[reverseKey];
+    const routeTime = document.getElementById('routeTime');
+    const routeDistance = document.getElementById('routeDistance');
+    const routeStations = document.getElementById('routeStations');
+    const routeStopsLabel = document.getElementById('routeStopsLabel');
+
+    if (route) {
+      routeTime.textContent = formatDuration(route.duration);
+      routeDistance.textContent = `${route.distance} km`;
+      routeStations.textContent = route.stops.length;
+      routeStopsLabel.textContent = `${rawOrigin.trim()} → ${rawDestination.trim()}`;
+      renderStations(route.stops);
+      renderMap(route, rawOrigin.trim(), rawDestination.trim());
+      return;
+    }
+
+    const estimatedDistance = 480 + Math.floor(Math.random() * 80);
+    const estimatedDuration = Math.round(estimatedDistance / 75 * 60);
+    const fallbackStops = [
+      {
+        name: 'Posto Rota Segura',
+        km: Math.round(estimatedDistance * 0.22),
+        price: 'R$ 5,49',
+        badge: 'Abastecimento',
+        amenities: ['descanso', 'banheiro'],
+        reviews: [
+          { stars: '★★★★☆', text: 'Boa localização e diesel sem fila. Ideal para ajustar o cronograma.' }
+        ]
+      },
+      {
+        name: 'Posto Estrada Azul',
+        km: Math.round(estimatedDistance * 0.55),
+        price: 'R$ 5,37',
+        badge: 'Descanso',
+        amenities: ['patio seguro', 'restaurante', 'banheiro'],
+        reviews: [
+          { stars: '★★★★★', text: 'Ótima estrutura, tranquilo para parar à noite. Banheiro e restaurante funcionam bem.' }
+        ]
+      },
+      {
+        name: 'Posto Ponto Final',
+        km: Math.round(estimatedDistance * 0.82),
+        price: 'R$ 5,58',
+        badge: 'Última parada',
+        amenities: ['banheiro', 'restaurante'],
+        reviews: [
+          { stars: '★★★★☆', text: 'Local seguro e atendimento rápido. Útil antes de chegar ao destino.' }]
+      }
+    ];
+
+    routeTime.textContent = formatDuration(estimatedDuration);
+    routeDistance.textContent = `${estimatedDistance} km`;
+    routeStations.textContent = fallbackStops.length;
+    routeStopsLabel.textContent = `${rawOrigin.trim()} → ${rawDestination.trim()}`;
+    renderStations(fallbackStops);
+    renderMap({ stops: fallbackStops }, rawOrigin.trim(), rawDestination.trim());
+  }
+
+  // Smooth number increment in stats (visual interest)
+  setTimeout(() => {
+    animateCounter();
+  }, 800);
+</script>
+
+</body>
+</html>

@@ -1271,6 +1271,317 @@
   }
 
   .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+  /* ===== PLANOS ===== */
+.planos {
+  background: var(--navy);
+}
+
+.planos-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.75rem;
+  margin-top: 3.5rem;
+  align-items: stretch;
+}
+
+.plano-card {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 20px;
+  padding: 2rem 1.75rem;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.plano-card:hover {
+  border-color: rgba(255,255,255,0.18);
+  transform: translateY(-6px);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+}
+
+.plano-card.destaque {
+  border-color: rgba(244,115,28,0.5);
+  background: rgba(244,115,28,0.06);
+  box-shadow: 0 0 0 4px rgba(244,115,28,0.08);
+  transform: scale(1.03);
+}
+
+.plano-card.destaque:hover {
+  border-color: rgba(244,115,28,0.7);
+  box-shadow: 0 24px 48px rgba(244,115,28,0.15), 0 0 0 4px rgba(244,115,28,0.12);
+  transform: scale(1.03) translateY(-6px);
+}
+
+.plano-badge {
+  position: absolute;
+  top: -14px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--orange);
+  color: var(--white);
+  padding: 6px 18px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+  box-shadow: 0 4px 16px rgba(244,115,28,0.35);
+}
+
+.plano-header {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.plano-icon {
+  font-size: 2.4rem;
+  margin-bottom: 0.5rem;
+}
+
+.plano-nome {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: -0.5px;
+  color: var(--white);
+}
+
+.plano-desc {
+  font-size: 0.85rem;
+  color: var(--gray);
+  margin-top: 0.35rem;
+  line-height: 1.4;
+}
+
+.plano-preco {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.preco-label {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--gray);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 4px;
+}
+
+.preco-moeda {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: rgba(255,255,255,0.6);
+  vertical-align: super;
+}
+
+.preco-valor {
+  font-family: var(--font-display);
+  font-size: 3rem;
+  font-weight: 900;
+  color: var(--white);
+  line-height: 1;
+}
+
+.plano-card.destaque .preco-valor {
+  color: var(--orange);
+}
+
+.preco-periodo {
+  font-size: 0.9rem;
+  color: var(--gray);
+  font-weight: 500;
+}
+
+.plano-features {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  margin-bottom: 1.75rem;
+  flex: 1;
+}
+
+.plano-features li {
+  font-size: 0.88rem;
+  color: rgba(255,255,255,0.75);
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  line-height: 1.4;
+}
+
+.check-list {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.6rem;
+  font-weight: 700;
+  margin-top: 2px;
+}
+
+.check-list.teal {
+  background: rgba(0,201,167,0.2);
+  color: var(--teal);
+}
+
+.check-list.orange {
+  background: rgba(244,115,28,0.2);
+  color: var(--orange);
+}
+
+.check-list.gray {
+  background: rgba(255,255,255,0.06);
+  color: rgba(255,255,255,0.25);
+}
+
+.btn-plano {
+  display: block;
+  text-align: center;
+  padding: 0.85rem 1.5rem;
+  border-radius: 8px;
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  text-decoration: none;
+  letter-spacing: 0.5px;
+  transition: all 0.2s;
+  cursor: pointer;
+  border: none;
+}
+
+.btn-plano.preenchido {
+  background: var(--orange);
+  color: var(--white);
+}
+
+.btn-plano.preenchido:hover {
+  background: var(--orange-dark);
+  box-shadow: 0 8px 25px rgba(244,115,28,0.4);
+}
+
+.btn-plano.outline {
+  background: transparent;
+  color: var(--white);
+  border: 1px solid rgba(255,255,255,0.25);
+}
+
+.btn-plano.outline:hover {
+  border-color: var(--teal);
+  color: var(--teal);
+  background: rgba(0,201,167,0.06);
+}
+
+/* Ajuste responsivo para os planos */
+@media (max-width: 900px) {
+  .planos-grid {
+    grid-template-columns: 1fr;
+    max-width: 440px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .plano-card.destaque {
+    transform: scale(1);
+  }
+
+  .plano-card.destaque:hover {
+    transform: scale(1) translateY(-6px);
+  }
+}
+
+/* ===== CONTATO ===== */
+.contato {
+  background: var(--navy-mid);
+}
+
+.contato-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.75rem;
+  margin-top: 3rem;
+  max-width: 680px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.contato-card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 16px;
+  padding: 2rem;
+  text-align: center;
+  text-decoration: none;
+  color: var(--white);
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.contato-card:hover {
+  border-color: var(--orange);
+  background: rgba(244,115,28,0.06);
+  transform: translateY(-4px);
+  box-shadow: 0 16px 36px rgba(0,0,0,0.25);
+}
+
+.contato-icone {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.contato-titulo {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--white);
+}
+
+.contato-dado {
+  font-size: 1rem;
+  font-weight: 500;
+  color: rgba(255,255,255,0.8);
+  word-break: break-all;
+}
+
+.contato-acao {
+  margin-top: 0.75rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--orange-light);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: color 0.2s;
+}
+
+.contato-card:hover .contato-acao {
+  color: var(--orange);
+}
+
+/* Ajuste mobile */
+@media (max-width: 600px) {
+  .contato-grid {
+    grid-template-columns: 1fr;
+    max-width: 380px;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -1796,6 +2107,118 @@
           🚛 Garantir meu lugar na fila
         </button>
       </form>
+    </div>
+  </div>
+</section>
+
+<!-- PLANOS -->
+<section class="planos" id="planos">
+  <div class="container">
+    <div class="fade-in" style="text-align:center">
+      <div class="section-tag">Planos</div>
+      <h2 class="section-title">Escolha o plano<br><span class="teal">que cabe no seu bolso.</span></h2>
+      <p class="section-desc" style="margin:0 auto">Do gratuito ao completo. Sem letra miúda, sem taxa escondida.</p>
+    </div>
+
+    <div class="planos-grid fade-in">
+
+      <!-- PLANO GRATUITO -->
+      <div class="plano-card">
+        <div class="plano-header">
+          <h3 class="plano-nome">Gratuito</h3>
+          <p class="plano-desc">Para começar a explorar a plataforma.</p>
+        </div>
+        <div class="plano-preco">
+          <span class="preco-moeda">R$</span>
+          <span class="preco-valor">0</span>
+          <span class="preco-periodo">/mês</span>
+        </div>
+        <ul class="plano-features">
+          <li><span class="check-list teal">✓</span> Mapa básico de postos</li>
+          <li><span class="check-list teal">✓</span> Até 2 fretes por mês</li>
+          <li><span class="check-list teal">✓</span> Visualização de perrnoites</li>
+          <li><span class="check-list teal">✓</span> Acesso a comunidade (leitura)</li>
+          <li><span class="check-list teal">✓</span> Suporte por e-mail</li>
+        </ul>
+        <a href="#cadastro" class="btn-plano outline">Começar grátis</a>
+      </div>
+
+      <!-- PLANO PRO -->
+      <div class="plano-card destaque">
+        <div class="plano-badge">MAIS POPULAR</div>
+        <div class="plano-header">
+          <h3 class="plano-nome">Pro</h3>
+          <p class="plano-desc">O plano mais completo para o caminhoneiro autônomo.</p>
+        </div>
+        <div class="plano-preco">
+          <span class="preco-moeda">R$</span>
+          <span class="preco-valor">49</span>
+          <span class="preco-periodo">,90/mês</span>
+        </div>
+        <ul class="plano-features">
+          <li><span class="check-list orange">✓</span> Mapa completo com preços em tempo real</li>
+          <li><span class="check-list orange">✓</span> Fretes ilimitados sem comissão</li>
+          <li><span class="check-list orange">✓</span> Pernoites avaliados com todos os detalhes</li>
+          <li><span class="check-list orange">✓</span> Alertas de bloqueios e trechos perigosos</li>
+          <li><span class="check-list orange">✓</span> Comunidade exclusiva com participação ativa</li>
+          <li><span class="check-list orange">✓</span> Relatório de ganhos e histórico de rotas</li>
+          <li><span class="check-list orange">✓</span> Suporte prioritário via WhatsApp</li>
+        </ul>
+        <a href="#cadastro" class="btn-plano preenchido">Assinar Pro</a>
+      </div>
+
+      <!-- PLANO EMPRESAS -->
+      <div class="plano-card">
+        <div class="plano-header">
+          <h3 class="plano-nome">Empresas</h3>
+          <p class="plano-desc">Para transportadoras e gestores de frota.</p>
+        </div>
+        <div class="plano-preco">
+          <span class="preco-moeda">R$</span>
+          <span class="preco-valor">199</span>
+          <span class="preco-periodo">,90/mês</span>
+        </div>
+        <ul class="plano-features">
+          <li><span class="check-list teal">✓</span> Tudo do plano Pro</li>
+          <li><span class="check-list teal">✓</span> Dashboard de gestão de frota</li>
+          <li><span class="check-list teal">✓</span> Motoristas ilimitados</li>
+          <li><span class="check-list teal">✓</span> Relatórios e analytics avançados</li>
+          <li><span class="check-list teal">✓</span> Rastreamento em tempo real</li>
+          <li><span class="check-list teal">✓</span> Integração via API</li>
+          <li><span class="check-list teal">✓</span> Gerente de conta dedicado</li>
+        </ul>
+        <a href="#cadastro" class="btn-plano outline">Falar com vendas</a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- CONTATO -->
+<section class="contato" id="contato">
+  <div class="container">
+    <div class="fade-in" style="text-align:center">
+      <div class="section-tag">Fale Conosco</div>
+      <h2 class="section-title">Direto com a<br><span class="orange">PitStopBR.</span></h2>
+      <p class="section-desc" style="margin:0 auto">Mande uma mensagem ou ligue pra gente. Sem robô, sem enrolação.</p>
+    </div>
+
+    <div class="contato-grid fade-in">
+      <!-- Email -->
+      <a href="mailto:pitstopbr2026@gmail.com" class="contato-card">
+        <div class="contato-icone">📧</div>
+        <h3 class="contato-titulo">E-mail</h3>
+        <p class="contato-dado">pitstopbr2026@gmail.com</p>
+        <span class="contato-acao">Enviar mensagem →</span>
+      </a>
+
+      <!-- Telefone -->
+      <a href="tel:+5533225588" class="contato-card">
+        <div class="contato-icone">📞</div>
+        <h3 class="contato-titulo">Telefone</h3>
+        <p class="contato-dado">3322-5588</p>
+        <span class="contato-acao">Ligar agora →</span>
+      </a>
     </div>
   </div>
 </section>
